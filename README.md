@@ -1,24 +1,7 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
-
-Things you may want to cover:
-
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+## Setup
+* Copy `.env.example` to `.env` and replace secrets
+* You'll need a local postgres DB for the flights. Edit `config/database.yml` with your postgres user creds.
+* Create the DB: `rake db:create db:schema:load db:seed`
+* `Rails s` to run the app on `http://localhost:3000/`

@@ -10,14 +10,15 @@
   </div>
 
   <h1>Spreedly Airlines Flights</h1>
-
+  </br>
   <table class="table">
     <thead>
       <tr>
         <th scope="col">Origin</th>
         <th scope="col">Destination</th>
         <th scope="col">Price</th>
-        <th scope="col"></th>
+        <th scope="col">Checkout Options: <small>Save Card <%=check_box_tag 'save_card', '0', false, id: 'save_card_check'%>
+                                                 Use Expedia Checkout <%=check_box_tag 'use_expedia', '0', false, id: 'use_expedia_check'%></small></th>
       </tr>
     </thead>
 
@@ -27,12 +28,20 @@
           <td><%= flight.origin %></td>
           <td><%= flight.destination %></td>
           <td><%= number_to_currency(flight.price/100) %></td>
-          <td><%= link_to 'Purchase', new_flight_transaction_path(flight), class: "btn btn-primary" %></td>
+          <td style="text-align:center"><button class='btn btn-primary' 
+              onClick='openExpress("<%= number_to_currency(flight.price/100) %>", <%= flight.price %>, "<%= flight.origin %>", "<%= flight.destination %>", <%= flight.id %>)'>Purchase</button>
         </tr>
       <% end %>
     </tbody>
   </table>
 
+  <%= form_tag transactions_url, id: 'payment-form' do %>
+    <%= hidden_field_tag :price, nil, id: 'charge-price' %>
+    <%= hidden_field_tag :token, nil, id: 'payment-method-token' %>
+    <%= hidden_field_tag :save_card, false, id: 'save-card' %>
+    <%= hidden_field_tag :use_expedia, false, id: 'use-expedia' %>
+  <% end %>
+
   <br>
-  <%= link_to 'Past Transactions', flight_transactions_path(@flights[0].id), class: "btn btn-primary" %>
+  <%= link_to 'Past Transactions', transactions_path, class: "btn btn-primary" %>
 </div>

@@ -1,15 +1,11 @@
 require 'httparty'
 
-class Transaction < ApplicationRecord
-  belongs_to :flight
+class Purchaser
   include HTTParty
-
-  validates :email, presence: true
-  validates :amount, presence: true
   
   @@base_uri = 'https://core.spreedly.com/v1'
 
-  def purchase_gateway(token, amt, email, retain)
+  def purchase_gateway(token, amt, retain)
     purchase_uri = @@base_uri + '/gateways/' + ENV['GATEWAY_TOKEN'] + '/purchase.json'
     response = HTTParty.post(purchase_uri, base_options.merge(
       {
@@ -18,8 +14,7 @@ class Transaction < ApplicationRecord
           payment_method_token: token,
           amount: amt,
           currency_code: 'USD',
-          retain_on_success: retain,
-          email: email
+          retain_on_success: retain
           }
         }.to_json
       }
@@ -45,7 +40,6 @@ class Transaction < ApplicationRecord
   end
 
   def get_list()
-    puts("GET LIST")
     list_uri = @@base_uri + '/gateways/' + ENV['GATEWAY_TOKEN'] + '/transactions.json?order=desc'
     response = HTTParty.get(list_uri, base_options)
     response.parsed_response
