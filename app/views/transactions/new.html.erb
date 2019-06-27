@@ -1,0 +1,68 @@
+<script type="text/javascript">
+
+    var environmentKey= "JnWWxMySJUa1SLSo9nghX9idwqW"
+    var amount = '<%= @flight.price %>'/100;
+    var origin = '<%= @flight.origin %>';
+    var destination = '<%= @flight.destination %>';
+    var flightNumber = '<%= @flight.id %>';
+
+    var options = {
+    company_name: "Spreedly Airlines",
+    sidebar_top_description: "Purchase flight",
+    sidebar_bottom_description: `Flight number ${flightNumber} from ${origin} to ${destination}`,
+    amount: `\$${amount}`}
+
+    SpreedlyExpress.init(environmentKey,options);
+
+    SpreedlyExpress.onPaymentMethod(function(token, paymentMethod) {
+
+        // Send requisite payment method info to backend
+        var tokenField = document.getElementById("payment_method_token");
+        tokenField.setAttribute("value", token);
+        var masterForm = document.getElementById("payment-form");
+        masterForm.submit();
+    });
+
+</script>
+
+<div class="container">
+    </br>
+    <div>
+        <% flash.each do |key, value| %>
+            <div class="<%= flash_class(key) %>">
+            <a href="#" data-dismiss="alert" class="close">×</a>
+            <%= value %>
+            </div>
+        <% end %>
+    </div>
+    </br>
+    <div class="col-sm-offset-5 col-sm-2">
+        <%= link_to 'Back', flights_path, class: "btn btn-primary btn-block" %>
+    </div>
+    </br>
+    <h1>Purchase Flight</h1>
+    <p>Flight number <%= @flight.id  %> from <%= @flight.origin  %> to <%= @flight.destination  %></p>
+    <p>Total: <%= number_to_currency(@flight.price/100)  %></p>
+
+    <%= form_for :transaction, :url => flight_transactions_path(), :html => {:id => "payment-form"} do |f| %>
+        <h4>Buyer</h4>
+        <div class="form-group"> 
+            <%= f.label "Email address" %>
+            <%= f.text_field :email, :class => 'form-control', :placeholder => 'name@example.com'%>
+        </div>
+        <div class="form-check">
+            <%= f.check_box :save_card, {} %> 
+            <%= f.label "Save this card for future purchases" %> 
+        </div>
+        <div class="form-check">
+            <%= f.check_box :external, {} %> 
+            <%= f.label "Purchase with Expedia" %> 
+        </div>
+        <%= f.hidden_field :amount, :value => @flight.price %>
+        <%= f.hidden_field :flight_id, :value => @flight.id %> 
+
+        <%= hidden_field_tag 'payment_method_token' %>
+        <%= button_tag 'Enter Payment Info', type: "button", class: "btn btn-primary btn-block", onClick: "SpreedlyExpress.openView();" %>
+    <% end %>
+
+</div>

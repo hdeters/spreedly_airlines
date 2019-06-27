@@ -1,0 +1,26 @@
+# Postgres version 3.x
+#   gem install pg
+#
+#   Ensure the Postgres gem is defined in your Gemfile
+#   gem 'pg'
+#
+default: &default
+  adapter: postgresql
+  pool: 5
+  timeout: 5000
+
+development:
+  adapter: postgresql
+  encoding: unicode
+  database: spreedly_airlines_development
+  pool: 5
+  username: postgres
+  password: postgres
+
+test:
+  adapter: postgresql
+  encoding: unicode
+  database: spreedly_airlines_test
+  pool: 5
+  username: postgres
+  password: postgres

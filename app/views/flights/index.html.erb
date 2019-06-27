@@ -1,0 +1,38 @@
+<div class="container">
+  </br>
+  <div>
+    <% flash.each do |key, value| %>
+        <div class="<%= flash_class(key) %>">
+        <a href="#" data-dismiss="alert" class="close">×</a>
+        <%= value %>
+        </div>
+    <% end %>
+  </div>
+
+  <h1>Spreedly Airlines Flights</h1>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">Origin</th>
+        <th scope="col">Destination</th>
+        <th scope="col">Price</th>
+        <th scope="col"></th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% @flights.each do |flight| %>
+        <tr>
+          <td><%= flight.origin %></td>
+          <td><%= flight.destination %></td>
+          <td><%= number_to_currency(flight.price/100) %></td>
+          <td><%= link_to 'Purchase', new_flight_transaction_path(flight), class: "btn btn-primary" %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <br>
+  <%= link_to 'Past Transactions', flight_transactions_path(@flights[0].id), class: "btn btn-primary" %>
+</div>

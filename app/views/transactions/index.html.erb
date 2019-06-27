@@ -1,0 +1,34 @@
+<div class="container">
+    </br>
+    <div class="col-sm-offset-5 col-sm-2">
+        <%= link_to 'Back', flights_path, class: "btn btn-primary btn-block" %>
+    </div>
+    </br>
+    <p><h1>Recent Transactions</h1>(Excluding Expedia)</p>
+
+    <table id="transactionTable" class="table table-striped table-bordered table-sm">
+        <thead>
+            <tr>
+            <th scope="col">Date</th>
+            <th scope="col">User</th>
+            <th scope="col">Amount</th>
+            <th scope="col">Status</th>
+            <th scope="col">Details</th>
+            <th scope="col">Last Four</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <% @filtered_list.each do |item| %>
+                <tr>
+                    <td><%= item["created_at"] %></td>
+                    <td><%= item["email"] %></td>
+                    <td><%= number_to_currency(item["amount"].to_f/100) %></td>
+                    <td><%= item["message"] %></td>
+                    <td><%= item["state"] %></td>
+                    <td><%= item["payment_method"]["last_four_digits"] %></td>
+                </tr>
+            <% end %>
+        </tbody>
+    </table>
+</div>
