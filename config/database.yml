@@ -16,11 +16,3 @@ development:
   pool: 5
   username: postgres
   password: postgres
-
-test:
-  adapter: postgresql
-  encoding: unicode
-  database: spreedly_airlines_test
-  pool: 5
-  username: postgres
-  password: postgres

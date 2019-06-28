@@ -10,14 +10,15 @@
   </div>
 
   <h1>Spreedly Airlines Flights</h1>
-
+  </br>
   <table class="table">
     <thead>
       <tr>
         <th scope="col">Origin</th>
         <th scope="col">Destination</th>
         <th scope="col">Price</th>
-        <th scope="col"></th>
+        <th scope="col">Checkout Options: <small>Save Card <%=check_box_tag 'save_card', '0', false, id: 'save_card_check'%>
+                                                 Use Expedia Checkout <%=check_box_tag 'use_expedia', '0', false, id: 'use_expedia_check'%></small></th>
       </tr>
     </thead>
 
@@ -27,12 +28,61 @@
           <td><%= flight.origin %></td>
           <td><%= flight.destination %></td>
           <td><%= number_to_currency(flight.price/100) %></td>
-          <td><%= link_to 'Purchase', new_flight_transaction_path(flight), class: "btn btn-primary" %></td>
+          <td style="text-align:center"><button class='btn btn-primary' 
+              onClick='openExpress("<%= number_to_currency(flight.price/100) %>", <%= flight.price %>, "<%= flight.origin %>", "<%= flight.destination %>", <%= flight.id %>)'>Purchase With New Card</button>
+              <button class='btn btn-primary' data-toggle="modal" data-target="#cardsModal" data-price=<%= flight.price %>>Use Saved Card</button></td>
         </tr>
       <% end %>
     </tbody>
   </table>
 
+  <div class="modal fade" id="cardsModal" tabindex="-1" role="dialog" aria-labelledby="cardsModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="cardsModalLabel">Saved Cards</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <table id="cardsTable" class="table table-sm">
+        <span id="price-tag"></span>
+        <thead>
+            <tr>
+            <th scope="col">Card Type</th>
+            <th scope="col">Last Four</th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <% @saved_cards.each do |item| %>
+                <tr>
+                    <td><%= item["card_type"].gsub("_", " ").capitalize! %></td>
+                    <td><%= item["last_four_digits"] %></td>
+                    <td><button type="button" class="btn btn-success btn-xs" onClick='useSavedCard("<%= item["token"] %>")'>Use This Card</button></td>
+                    <td><%= link_to 'Forget This Card', card_path(item['token']), method: :delete %></td>
+                </tr>
+            <% end %>
+        </tbody>
+    </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <%= form_tag transactions_url, id: 'payment-form' do %>
+    <%= hidden_field_tag :price, nil, id: 'charge-price' %>
+    <%= hidden_field_tag :token, nil, id: 'payment-method-token' %>
+    <%= hidden_field_tag :save_card, false, id: 'save-card' %>
+    <%= hidden_field_tag :use_expedia, false, id: 'use-expedia' %>
+  <% end %>
+
   <br>
-  <%= link_to 'Past Transactions', flight_transactions_path(@flights[0].id), class: "btn btn-primary" %>
+  <%= link_to 'Past Transactions', transactions_path, class: "btn btn-primary" %>
 </div>
